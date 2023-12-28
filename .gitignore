@@ -32,7 +32,6 @@
 
 # Clion
 cmake-build-debug
-/CMakeLists.txt
 .idea
 
 # Clion Default ignored files
