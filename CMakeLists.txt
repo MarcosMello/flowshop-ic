@@ -5,7 +5,8 @@ set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -m64 -O -fPIC -fexceptions -DNDEBUG -DIL_STD -stdlib=libc++")
 
 add_executable(flowshop_ic
-        Code/cplexModel.cpp)
+        Code/cplexModel.cpp
+        Code/bits/stdc++.h)
 
 include_directories(/Applications/CPLEX_Studio2211/cplex/include)
 include_directories(/Applications/CPLEX_Studio2211/cplex/include/ilcplex)
