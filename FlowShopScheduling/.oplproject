@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ASCII"?><project>
+    	
+    <version>1.0</version>
+    	
+    <configs>
+        		
+        <config default="true" name="Runner" category="opl">
+            			
+            <ref name="flowshopschedulingmodel.mod" type="model">
+			</ref>
+            			
+            <ref name="data/equal deadlines/n10m20.dat" type="data">
+			</ref>
+            		
+        </config>
+        	
+    </configs>
+    	
+
+</project>
