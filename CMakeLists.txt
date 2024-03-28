@@ -14,6 +14,7 @@ add_executable(flowshop_ic
         Code/Population.cpp
         Code/Individual.cpp
         Code/Conclusion.cpp
+        Code/main.cpp
 )
 
 include_directories(/Applications/CPLEX_Studio2211/cplex/include)

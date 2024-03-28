@@ -109,4 +109,24 @@ private:
     [[nodiscard]] size_t earlyTaskVerificationFunction(size_t i);
 };
 
+class GeneticAlgorithmRunner{
+public:
+    GeneticAlgorithmRunner(size_t maximumIterations, size_t maximumIterationsWithoutImprovement,
+        size_t mutationProbability, size_t individualTransferRate, size_t populationSize,
+        const vector<vector<int>> &processingTime, const vector<int> &deadlines);
+
+    [[nodiscard]] size_t getObjectiveValue() const;
+
+    [[nodiscard]] vector<int> getObjectiveJobOrder() const;
+
+    void print() const;
+
+private:
+    size_t iteration = 0;
+
+    size_t iterationsWithoutImprovement = 0;
+
+    Population population;
+};
+
 #endif //GENETICALGORITHM_H

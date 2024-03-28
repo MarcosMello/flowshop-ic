@@ -1,4 +1,4 @@
-#include "inputData.h"
+#include "cplexModel.h"
 #include <ilcplex/ilocplex.h>
 
 int jobs, machines;
@@ -130,8 +130,8 @@ void cplexModelSolver(const InputData& instanceData){
 
         cout << "\n\n";
 
-        cout << "Valor da função objetivo: " << cplexSolver.getObjValue() << endl;
-        cout << "Ordem das tarefas: ";
+        cout << "Objective Value: " << cplexSolver.getObjValue() << endl;
+        cout << "Job Order: ";
         for(int i = 0; i < jobs; i++){
             for(int j = 0; j < jobs; j++){
                 if(cplexSolver.getIntValue(position[j][i])) {
@@ -139,6 +139,7 @@ void cplexModelSolver(const InputData& instanceData){
                 }
             }
         }
+        cout << endl;
     } catch (IloException &e) {
         cerr << "Concert exception caught" << endl;
         throw;
