@@ -1,4 +1,4 @@
-#include "inputData.h"
+#include "../inputData.h"
 
 InputData::InputData(const std::string &filename) {
     std::ifstream file(filename, std::ios::in);
@@ -6,6 +6,8 @@ InputData::InputData(const std::string &filename) {
         std::cerr << "No such file on: " << filename << std::endl;
         throw std::runtime_error("File not found");
     }
+
+    this->stem = filesystem::path(filename).stem().generic_string();
 
     int jobs, machines;
     file >> jobs >> machines;

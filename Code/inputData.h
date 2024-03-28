@@ -7,6 +7,8 @@ using namespace std;
 
 class InputData{
 public:
+    std::string stem;
+
     int jobs;
     int machines;
     std::vector< std::vector<int> > processingTime;
