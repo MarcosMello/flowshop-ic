@@ -42,7 +42,7 @@ void Population::generateNextGeneration() {
 
     for (size_t i = 0; i < this->populationSize; i++) {
         if (i < this->individualTransferRate) {
-            newPopulation[i] = this->population[i];
+            newPopulation.push_back(this->population[i]);
 
             continue;
         }
@@ -63,7 +63,7 @@ void Population::generateNextGeneration() {
             child.mutate();
         }
 
-        newPopulation[i] = child;
+        newPopulation.push_back(child);
     }
 
     this->population = std::move(newPopulation);
@@ -88,6 +88,6 @@ vector<int> Population::getObjectiveJobOrder() const{
 void Population::sort(){
     std::sort(this->population.begin(),
         this->population.end(),
-        [](const auto &left, const auto &right){return left < right;}
+        [](const auto &left, const auto &right){return left > right;}
     );
 }
