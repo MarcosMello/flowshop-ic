@@ -10,6 +10,10 @@ add_executable(flowshop_ic
         Code/geneticAlgorithm.cpp
         Code/inputData.cpp
         Code/inputData.h
+        Code/GeneticAlgorithm.h
+        Code/Population.cpp
+        Code/Individual.cpp
+        Code/Conclusion.cpp
 )
 
 include_directories(/Applications/CPLEX_Studio2211/cplex/include)

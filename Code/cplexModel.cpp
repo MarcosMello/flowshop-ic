@@ -1,8 +1,6 @@
 #include "inputData.h"
 #include <ilcplex/ilocplex.h>
 
-using namespace std;
-
 int jobs, machines;
 vector< vector<int> > processingTime;
 vector<int> deadlines;

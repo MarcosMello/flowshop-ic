@@ -3,6 +3,8 @@
 
 #include "bits/stdc++.h"
 
+using namespace std;
+
 class InputData{
 public:
     int jobs;
