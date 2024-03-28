@@ -1,4 +1,4 @@
-#include "GeneticAlgorithm.h"
+#include "../GeneticAlgorithm.h"
 
 Individual::Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines,
     vector<int> value) : value(std::move(value)), fitness(0) {

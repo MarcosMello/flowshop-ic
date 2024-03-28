@@ -1,4 +1,4 @@
-#include "GeneticAlgorithm.h"
+#include "../GeneticAlgorithm.h"
 
 Conclusion::Conclusion(const vector<vector<int>> &processingTime, const vector<int> &deadlines, Individual *individual) :
         processingTime(processingTime), deadlines(deadlines), individual(individual),

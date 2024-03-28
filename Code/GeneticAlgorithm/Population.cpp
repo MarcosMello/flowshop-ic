@@ -1,4 +1,4 @@
-#include "GeneticAlgorithm.h"
+#include "../GeneticAlgorithm.h"
 
 Population::Population(const size_t mutationProbability, const size_t individualTransferRate,
     const size_t populationSize, const vector<vector<int>> &processingTime,
