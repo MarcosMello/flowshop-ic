@@ -1,9 +1,11 @@
-#include "GeneticAlgorithm.h"
+#include "../GeneticAlgorithm.h"
 
 GeneticAlgorithmRunner::GeneticAlgorithmRunner(const size_t maximumIterations, const size_t maximumIterationsWithoutImprovement,
     const size_t mutationProbability, const size_t individualTransferRate,
     const size_t populationSize, const vector<vector<int>> &processingTime, const vector<int> &deadlines) :
     population(mutationProbability, individualTransferRate, populationSize, processingTime, deadlines){
+    const auto timerStart = chrono::system_clock::now();
+
     size_t objectiveValue = 0;
 
     while(iteration++ < maximumIterations && iterationsWithoutImprovement < maximumIterationsWithoutImprovement) {
@@ -16,6 +18,10 @@ GeneticAlgorithmRunner::GeneticAlgorithmRunner(const size_t maximumIterations, c
             objectiveValue = this->getObjectiveValue();
         }
     }
+
+    const auto timerEnd = chrono::system_clock::now();
+
+    this->timeSpent = timerEnd - timerStart;
 }
 
 [[nodiscard]]
@@ -36,4 +42,6 @@ void GeneticAlgorithmRunner::print() const {
         cout << (job + 1) << " ";
     }
     cout << endl;
+
+    cout << "Time spent: " << timeSpent.count() << endl;
 }

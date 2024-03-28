@@ -127,6 +127,8 @@ private:
     size_t iterationsWithoutImprovement = 0;
 
     Population population;
+
+    chrono::duration<double> timeSpent = chrono::duration<double>();
 };
 
 #endif //GENETICALGORITHM_H

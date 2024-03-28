@@ -1,5 +1,4 @@
-#include "cplexModel.h"
-#include <ilcplex/ilocplex.h>
+#include "../cplexModel.h"
 
 int jobs, machines;
 vector< vector<int> > processingTime;
@@ -12,6 +11,8 @@ void cplexModelSolver(const InputData& instanceData){
     deadlines = instanceData.deadlines;
 
     IloEnv env;
+
+    const auto timerStart = chrono::system_clock::now();
 
     try{
         IloModel model(env);
@@ -122,15 +123,22 @@ void cplexModelSolver(const InputData& instanceData){
         model.add(constraints);
 
         IloCplex cplexSolver(model);
+        cplexSolver.setParam(IloCplex::Param::TimeLimit, timeLimitInSeconds);
+
+        if(!isCplexVerboseActive) cplexSolver.setOut(env.getNullStream());
 
         if (!cplexSolver.solve()){
             env.error() << "Failed to optimize LP." << endl;
             throw;
         }
 
+        const auto timerEnd = chrono::system_clock::now();
+        const chrono::duration<double> timeSpent = timerEnd - timerStart;
+
         cout << "\n\n";
 
         cout << "Objective Value: " << cplexSolver.getObjValue() << endl;
+
         cout << "Job Order: ";
         for(int i = 0; i < jobs; i++){
             for(int j = 0; j < jobs; j++){
@@ -140,6 +148,8 @@ void cplexModelSolver(const InputData& instanceData){
             }
         }
         cout << endl;
+
+        cout << "Time spent: " << timeSpent.count() << endl;
     } catch (IloException &e) {
         cerr << "Concert exception caught" << endl;
         throw;
