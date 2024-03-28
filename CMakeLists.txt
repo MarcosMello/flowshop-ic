@@ -5,16 +5,17 @@ set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -m64 -O -fPIC -fexceptions -DNDEBUG -DIL_STD -stdlib=libc++ -std=c++17")
 
 add_executable(flowshop_ic
-        Code/cplexModel.cpp
+        Code/cplexModel/cplexModel.cpp
         Code/bits/stdc++.h
-        Code/geneticAlgorithm.cpp
-        Code/inputData.cpp
+        Code/GeneticAlgorithm/GeneticAlgorithm.cpp
+        Code/inputData/inputData.cpp
         Code/inputData.h
         Code/GeneticAlgorithm.h
-        Code/Population.cpp
-        Code/Individual.cpp
-        Code/Conclusion.cpp
+        Code/GeneticAlgorithm/Population.cpp
+        Code/GeneticAlgorithm/Individual.cpp
+        Code/GeneticAlgorithm/Conclusion.cpp
         Code/main.cpp
+        Code/Latex/comparisonTable.cpp
 )
 
 include_directories(/Applications/CPLEX_Studio2211/cplex/include)
