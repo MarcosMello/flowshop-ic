@@ -1,12 +1,12 @@
 #include "GeneticAlgorithm.h"
 
 Individual::Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines,
-    const vector<int> &value) : value(value), fitness(0) {
+    vector<int> value) : value(std::move(value)), fitness(0) {
     calculate_fitness(processingTime, deadlines);
 }
 
 Individual::Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines) :
-    Individual(processingTime, deadlines,getRandomJobPermutation(deadlines.size())) {}
+    Individual(processingTime, deadlines, getRandomJobPermutation(deadlines.size())) {}
 
 vector<int> Individual::getValue() const {
     return this->value;

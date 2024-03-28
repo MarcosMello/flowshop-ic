@@ -66,7 +66,7 @@ void Population::generateNextGeneration() {
         newPopulation[i] = child;
     }
 
-    this->population = move(newPopulation);
+    this->population = std::move(newPopulation);
     this->sort();
 }
 
@@ -88,6 +88,6 @@ vector<int> Population::getObjectiveJobOrder() const{
 void Population::sort(){
     std::sort(this->population.begin(),
         this->population.end(),
-        [](const auto &left, const auto &right){return left > right;}
+        [](const auto &left, const auto &right){return left < right;}
     );
 }

@@ -22,7 +22,7 @@ inline vector<int> getRandomJobPermutation(const size_t length) {
 
 class Individual{
 public:
-    Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines, const vector<int> &value);
+    Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines, vector<int> value);
     Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines);
 
     [[nodiscard]] vector<int> getValue() const;
@@ -37,8 +37,8 @@ public:
     auto operator[](const size_t i) const{
         return this->value[i];
     }
-    auto operator>(const Individual &rhs) const{
-        return (this->fitness > rhs.getFitness());
+    auto operator<(const Individual &rhs) const{
+        return (this->fitness < rhs.getFitness());
     }
 
 private:
@@ -99,7 +99,7 @@ private:
     size_t machines;
 
     vector<vector<int>> conclusion;
-    int objetiveValue;
+    int objectiveValue;
 
     [[nodiscard]] bool isJobEarly(size_t i) const;
     [[nodiscard]] int getLastTaskStartingTime(size_t i) const;

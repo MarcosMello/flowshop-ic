@@ -5,9 +5,6 @@ public:
     GeneticAlgorithmRunner(const size_t maximumIterations, const size_t maximumIterationsWithoutImprovement,
         const size_t mutationProbability, const size_t individualTransferRate,
         const size_t populationSize, const vector<vector<int>> &processingTime, const vector<int> &deadlines) :
-        maximumIterations(maximumIterations), maximumIterationsWithoutImprovement(maximumIterationsWithoutImprovement),
-        mutationProbability(mutationProbability), individualTransferRate(individualTransferRate),
-        populationSize(populationSize), processingTime(processingTime), deadlines(deadlines),
         population(mutationProbability, individualTransferRate, populationSize, processingTime, deadlines){
         size_t objectiveValue = 0;
 
@@ -37,16 +34,6 @@ private:
     size_t iteration = 0;
 
     size_t iterationsWithoutImprovement = 0;
-
-    const size_t maximumIterations;
-    const size_t maximumIterationsWithoutImprovement;
-
-    const size_t mutationProbability;
-    const size_t individualTransferRate;
-    const size_t populationSize;
-
-    const vector<vector<int>> &processingTime;
-    const vector<int> &deadlines;
 
     Population population;
 };
@@ -78,7 +65,7 @@ int main(int argc, char *argv[]) {
 
     cout << "Job order: ";
     for (const auto job: runner.getObjectiveJobOrder()) {
-        cout << job << " ";
+        cout << (job + 1) << " ";
     }
     cout << endl;
 

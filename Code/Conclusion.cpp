@@ -1,11 +1,11 @@
 #include "GeneticAlgorithm.h"
 
 Conclusion::Conclusion(const vector<vector<int>> &processingTime, const vector<int> &deadlines, Individual *individual) :
-    processingTime(processingTime), deadlines(deadlines), individual(individual),
-    jobs(processingTime.size()), machines(processingTime.front().size()),
-    conclusion(generateConclusion()), objetiveValue(0) {
+        processingTime(processingTime), deadlines(deadlines), individual(individual),
+        jobs(processingTime.size()), machines(processingTime.front().size()),
+        conclusion(generateConclusion()), objectiveValue(0) {
     for (size_t i = 0; i < deadlines.size(); i++) {
-        objetiveValue += abs(conclusion[i][conclusion[i].size() - 1] - deadlines[(*individual)[i]]);
+        objectiveValue += abs(conclusion[i][conclusion[i].size() - 1] - deadlines[(*individual)[i]]);
     }
 }
 
@@ -106,5 +106,5 @@ vector<vector<int>> Conclusion::generateConclusion() {
 
 [[nodiscard]]
 int Conclusion::getObjectiveValue() const {
-    return this->objetiveValue;
+    return this->objectiveValue;
 }
