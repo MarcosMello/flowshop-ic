@@ -25,15 +25,16 @@ Population::Population(const size_t mutationProbability, const size_t individual
 void Population::generateNextGeneration() {
     this->generation++;
 
+    size_t localPopulationSize = this->populationSize;
+
     vector<Individual> newPopulation;
-    newPopulation.reserve(this->populationSize);
+    newPopulation.reserve(localPopulationSize);
 
     size_t counter = 0;
-    size_t individualSize = this->population.front().size();
-    vector<double> probabilities(individualSize);
+    vector<double> probabilities(localPopulationSize);
     generate(probabilities.begin(), probabilities.end(),
-        [this, individualSize, counter]() -> double {
-            return static_cast<double>(2 * (individualSize - counter)) /
+        [this, localPopulationSize, counter]() -> double {
+            return static_cast<double>(2 * (localPopulationSize - counter)) /
                 static_cast<double>(this->population.size() * (this->population.size() + 1));
         }
     );
