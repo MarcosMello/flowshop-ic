@@ -136,21 +136,26 @@ void cplexModelSolver(const InputData& instanceData){
         const auto timerEnd = chrono::system_clock::now();
         const chrono::duration<double> timeSpent = timerEnd - timerStart;
 
-        cout << "\n\n";
+        cplexSolution = cplexSolver.getObjValue();
+        cplexTimeElapsed = timeSpent;
 
-        cout << "Objective Value: " << cplexSolver.getObjValue() << endl;
+        if (shouldPrintSolution) {
+            cout << "\n\n";
 
-        cout << "Job Order: ";
-        for(int i = 0; i < jobs; i++){
-            for(int j = 0; j < jobs; j++){
-                if(cplexSolver.getIntValue(position[j][i])) {
-                    cout << (j + 1) << " \n" [i == jobs];
+            cout << "Objective Value: " << cplexSolver.getObjValue() << endl;
+
+            cout << "Job Order: ";
+            for(int i = 0; i < jobs; i++){
+                for(int j = 0; j < jobs; j++){
+                    if(cplexSolver.getIntValue(position[j][i])) {
+                        cout << (j + 1) << " \n" [i == jobs];
+                    }
                 }
             }
-        }
-        cout << endl;
+            cout << endl;
 
-        cout << "Time spent: " << timeSpent.count() << endl;
+            cout << "Time spent: " << timeSpent.count() << endl;
+        }
     } catch (IloException &e) {
         cerr << "Concert exception caught" << endl;
         throw;
