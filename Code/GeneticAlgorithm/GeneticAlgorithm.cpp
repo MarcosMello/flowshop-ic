@@ -34,6 +34,11 @@ vector<int> GeneticAlgorithmRunner::getObjectiveJobOrder() const {
     return population.getObjectiveJobOrder();
 }
 
+[[nodiscard]]
+chrono::duration<double> GeneticAlgorithmRunner::getElapsedTime() const {
+    return this->timeSpent;
+}
+
 void GeneticAlgorithmRunner::print() const {
     cout << "Objective Value: " << this->getObjectiveValue() << endl;
 

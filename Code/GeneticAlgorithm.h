@@ -118,6 +118,7 @@ public:
     [[nodiscard]] size_t getObjectiveValue() const;
 
     [[nodiscard]] vector<int> getObjectiveJobOrder() const;
+    [[nodiscard]] chrono::duration<double> getElapsedTime() const;
 
     void print() const;
 

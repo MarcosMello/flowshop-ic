@@ -5,14 +5,19 @@
 
 class Line {
 public:
-    Line(string filename, IloNum cplexSolution, chrono::duration<double> cplexTimeElapsed,
+    Line(string filename, string instance, IloNum cplexSolution, chrono::duration<double> cplexTimeElapsed,
+        size_t gaSolution, chrono::duration<double> gaTimeElapsed);
+    Line(string filename, string instance, int referenceValue, IloNum cplexSolution, chrono::duration<double> cplexTimeElapsed,
         size_t gaSolution, chrono::duration<double> gaTimeElapsed);
 
     friend ostream &operator<<(ostream &stream, const Line& line);
 
 private:
     string filename;
-    int instance = 0;
+    string instance;
+
+    bool hasReferenceValue = false;
+    int referenceValue = 0;
 
     IloNum cplexSolution;
     chrono::duration<double> cplexTimeElapsed;
@@ -25,13 +30,17 @@ private:
 
 class Table {
 public:
-    Table(const string &caption, const string &label);
+    Table(const string &caption, const string &label, bool hasReferenceValue);
+
+    void addLine(const Line &line);
 
     friend ostream &operator<<(ostream &stream, const Table& table);
 
 private:
     string header;
     string footer;
+
+    bool hasReferenceValue;
 
     vector<Line> lines;
 };

@@ -1,13 +1,16 @@
 #include "../inputData.h"
 
-InputData::InputData(const std::string &filename) {
-    std::ifstream file(filename, std::ios::in);
+InputData::InputData(const std::string &path) {
+    std::ifstream file(path, std::ios::in);
     if (!file){
-        std::cerr << "No such file on: " << filename << std::endl;
+        std::cerr << "No such file on: " << path << std::endl;
         throw std::runtime_error("File not found");
     }
 
-    this->stem = filesystem::path(filename).stem().generic_string();
+    string stemCompleteString = filesystem::path(path).stem().generic_string();
+
+    this->stem = stemCompleteString.substr(0, stemCompleteString.find('_'));
+    this->instance = stemCompleteString.substr(stemCompleteString.find('_') + 1);;
 
     int jobs, machines;
     file >> jobs >> machines;
@@ -27,5 +30,9 @@ InputData::InputData(const std::string &filename) {
 
     for (int i = 0; i < this->jobs; i++){
         file >> this->deadlines[i];
+    }
+
+    if (hasObjectiveValueReference) {
+        file >> objectiveValue;
     }
 }
