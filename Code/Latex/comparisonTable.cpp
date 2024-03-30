@@ -17,11 +17,11 @@ ostream &operator<<(ostream &stream, const Line& line) {
     return stream;
 }
 
-Table::Table() :
+Table::Table(const string &caption, const string &label) :
     header(R"(\begin{table}[ht!]
             \renewcommand{\arraystretch}{1.2}
             \centering
-            \caption{Resultados obtidos para as instâncias com data de entrega comum} \label{Tab-Resultados-Comum}
+            \caption{)" + caption + R"(} \label{)" + label + R"(}
             \resizebox{\textwidth}{!}{%
                 \begin{tabular}{l *{9}{c}}
                     \toprule

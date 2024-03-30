@@ -25,7 +25,7 @@ private:
 
 class Table {
 public:
-    Table();
+    Table(const string &caption, const string &label);
 
     friend ostream &operator<<(ostream &stream, const Table& table);
 
