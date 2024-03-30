@@ -124,6 +124,7 @@ void cplexModelSolver(const InputData& instanceData){
 
         IloCplex cplexSolver(model);
         cplexSolver.setParam(IloCplex::Param::TimeLimit, timeLimitInSeconds);
+        cplexSolver.setParam(IloCplex::Param::Threads, threadLimit);
 
         if(!isCplexVerboseActive) cplexSolver.setOut(env.getNullStream());
 

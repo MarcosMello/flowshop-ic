@@ -19,6 +19,9 @@ void parseArguments(const int argc, char *argv[]) {
         } else if (argument.find("-cplexTimeLimit=") == 0) {
             string strippedArgument = argument.substr(16);
             timeLimitInSeconds = static_cast<int>(strtol(strippedArgument.c_str(), nullptr, 10));
+        } else if (argument.find("-cplexThreadsLimit=") == 0) {
+            string strippedArgument = argument.substr(16);
+            threadLimit = static_cast<int>(strtol(strippedArgument.c_str(), nullptr, 10));
         } else if (argument.find("-path=") == 0) {
             path = argument.substr(6);
         }

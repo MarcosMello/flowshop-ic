@@ -4,10 +4,11 @@
 #include "inputData.h"
 #include <ilcplex/ilocplex.h>
 
-bool isCplexVerboseActive = false;
-bool shouldPrintSolution = false;
+inline bool isCplexVerboseActive = false;
+inline bool shouldPrintSolution = false;
 
-int timeLimitInSeconds = 3600;
+inline int timeLimitInSeconds = 3600;
+inline int threadLimit = 1;
 
 void cplexModelSolver(const InputData& instanceData);
 
