@@ -95,15 +95,15 @@ int main(const int argc, char *argv[]) {
 
         const auto data = InputData(path);
 
-        if (shouldPrintSolution) {
-            cout << "Cplex: " << endl;
+        if (shouldPrintSolution && useCPLEX) {
+            cout << "Cplex" << " ( " << data.stem << "_" << data.instance << " ): " << endl;
         }
         if (useCPLEX) {
             cplexModelSolver(data);
         }
 
         if (shouldPrintSolution) {
-            cout << "\nGenetic Algorithm: " << endl;
+            cout << "\nGenetic Algorithm" << " ( " << data.stem << "_" << data.instance << " ): " << endl;
         }
 
         const vector<vector<int>> &processingTime = data.processingTime;

@@ -46,14 +46,36 @@ ostream &operator<<(ostream &stream, const Line& line) {
     if (line.hasReferenceValue) {
         stream << R"(\textbf{)" << line.filename << "} &&" << line.instance << "&&" << line.referenceValue << "&&"
         << line.cplexSolution << "&" << line.cplexTimeElapsed.count() << "&" << 0
-        << "&&" << line.gaSolution << "&" << line.gaTimeElapsed.count() << "&" << 0 << R"(\\ \hline)";
+        << "&&" << line.gaSolution << "&" << line.gaTimeElapsed.count() << "&"
+        << 100 * (static_cast<double>(line.gaSolution - line.referenceValue)/line.referenceValue) << R"(\\ \hline)";
 
         return stream;
     }
 
+    const double referenceValue = min(
+        line.cplexSolution,
+        static_cast<double>(line.gaSolution)
+    );
+
+    const double method = max(
+        line.cplexSolution,
+        static_cast<double>(line.gaSolution)
+    );
+
+    double differenceCPLEX, differenceGA;
+
+    if (line.cplexSolution < static_cast<double>(line.gaSolution)) {
+        differenceGA = 0;
+        differenceCPLEX = 100 * ((method - referenceValue) / referenceValue);
+    } else {
+        differenceGA = 100 * ((method - referenceValue) / referenceValue);;
+        differenceCPLEX = 0;
+    }
+
     stream << R"(\textbf{)" << line.filename << "} &" << line.instance << "&&" << line.cplexSolution << "&"
-        << line.cplexTimeElapsed.count() << "&" << 0 << "&&" << line.gaSolution << "&"
-        << line.gaTimeElapsed.count() << "&" << 0 << R"(\\ \hline)";
+        << line.cplexTimeElapsed.count() << "&" << differenceCPLEX << "&&" << line.gaSolution << "&"
+        << line.gaTimeElapsed.count() << "&"
+        << differenceGA << R"(\\ \hline)";
 
     return stream;
 }
