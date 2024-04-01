@@ -9,7 +9,7 @@ Population::Population(const size_t mutationProbability, const size_t individual
 
     generate_n(back_inserter(this->population),
                     populationSize,
-                    [processingTime, deadlines](){return Individual(processingTime, deadlines); });
+                [processingTime, deadlines](){ return Individual(processingTime, deadlines); });
 
     this->sort();
 }
