@@ -51,7 +51,7 @@ void Population::generateNextGeneration() {
         vector<decltype(distribution)::result_type> selectedParents(NUMBER_OF_PARENTS);
 
         generate_n(back_inserter(selectedParents), NUMBER_OF_PARENTS,
-            [distribution = distribution, generator = default_random_engine(random_device()())]() mutable {
+            [distribution = distribution, generator = defaultRandomEngine]() mutable {
                 return distribution(generator);
             }
         );

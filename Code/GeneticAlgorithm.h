@@ -4,8 +4,10 @@
 #include "inputData.h"
 
 constexpr int NUMBER_OF_PARENTS = 2;
+constexpr int SEED = 1;
 
-inline auto defaultRandomEngine = default_random_engine(random_device()());
+inline seed_seq seed{SEED};
+inline auto defaultRandomEngine = default_random_engine(seed);
 
 inline auto getRandomNumber(const size_t lowerBound, const size_t upperBound) {
     return uniform_int_distribution (lowerBound, upperBound) (defaultRandomEngine);
