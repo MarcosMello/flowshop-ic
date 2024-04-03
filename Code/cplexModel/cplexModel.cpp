@@ -20,7 +20,7 @@ void cplexModelSolver(const InputData& instanceData){
         IloArray<IloIntVarArray> position(env, jobs);
 
         IloIntVarArray earliness(env, jobs, 0, IloIntMax);
-        IloIntVarArray lateness(env, jobs, 0, IloIntMax);
+        IloIntVarArray tardiness(env, jobs, 0, IloIntMax);
 
         IloIntVarArray conclusion(env, jobs, 0, IloIntMax);
 
@@ -40,7 +40,7 @@ void cplexModelSolver(const InputData& instanceData){
 
         IloExpr objective(env);
         for (int i = 0; i < jobs; i++) {
-            objective += (earliness[i] + lateness[i]);
+            objective += (earliness[i] + tardiness[i]);
         }
 
         model.add(IloMinimize(env, objective));
@@ -117,7 +117,7 @@ void cplexModelSolver(const InputData& instanceData){
             constraints.add(positionColumns[i] == 1);
 
             constraints.add(earliness[i] >= conclusion[i] - conclusionByJob[i]);
-            constraints.add(lateness[i] >= conclusionByJob[i] - conclusion[i]);
+            constraints.add(tardiness[i] >= conclusionByJob[i] - conclusion[i]);
         }
 
         model.add(constraints);
