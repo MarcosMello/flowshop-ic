@@ -17,6 +17,13 @@ GeneticAlgorithmRunner::GeneticAlgorithmRunner(const size_t maximumIterations, c
             iterationsWithoutImprovement = 0;
             objectiveValue = this->getObjectiveValue();
         }
+
+        if (iterationsWithoutImprovement == maximumIterationsWithoutImprovement/2) {
+            const auto newIndividualValue =
+                TabuSearch(processingTime, deadlines, population.front()).getBestIndividualValue();
+
+            population.changeLeastFittest(Individual(processingTime, deadlines, newIndividualValue));
+        }
     }
 
     const auto timerEnd = chrono::system_clock::now();
