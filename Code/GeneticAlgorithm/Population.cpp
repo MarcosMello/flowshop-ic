@@ -56,7 +56,7 @@ void Population::generateNextGeneration() {
             }
         );
 
-        vector<int> childVector = population[selectedParents.front()]
+        const vector<int> childVector = population[selectedParents.front()]
             .createChildValueVector(population[selectedParents.back()]);
         auto child = Individual(this->processingTime, this->deadlines, childVector);
 
@@ -84,6 +84,12 @@ size_t Population::getObjectiveValue() const {
 [[nodiscard]]
 vector<int> Population::getObjectiveJobOrder() const{
     return this->front().getValue();
+}
+
+void Population::changeLeastFittest(const Individual &individual) {
+    this->population.back() = individual;
+
+    this->sort();
 }
 
 void Population::sort(){
