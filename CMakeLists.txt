@@ -16,6 +16,7 @@ add_executable(flowshop_ic
         Code/GeneticAlgorithm/Conclusion.cpp
         Code/main.cpp
         Code/Latex/comparisonTable.cpp
+        Code/TabuSearch/TabuSearch.cpp
 )
 
 include_directories(/Applications/CPLEX_Studio2211/cplex/include)
