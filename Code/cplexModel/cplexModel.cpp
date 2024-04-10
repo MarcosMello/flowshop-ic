@@ -140,8 +140,6 @@ void cplexModelSolver(const InputData& instanceData){
         cplexTimeElapsed = timeSpent;
 
         if (shouldPrintSolution) {
-            cout << "\n\n";
-
             cout << "Objective Value: " << cplexSolver.getObjValue() << endl;
 
             cout << "Job Order: ";
