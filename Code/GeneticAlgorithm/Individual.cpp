@@ -49,16 +49,12 @@ vector<int> Individual::createChildValueVector(const Individual &parent) const {
 }
 
 void Individual::mutate() {
-    const size_t slidingGenesStart = getRandomNumber(0, this->size() - 2);
-    const size_t slidingGenesEnd = getRandomNumber(slidingGenesStart + 1, this->size() - 1);
+    const size_t firstGene = getRandomNumber(0, value.size() - 1);
+    const size_t secondGene = getRandomNumber(0, value.size() - 1);
 
-    const int slidedGene = this->value[slidingGenesEnd];
-
-    for (size_t i = slidingGenesEnd; i > slidingGenesStart; i--) {
-        this->value[i] = this->value[i - 1];
-    }
-
-    this->value[slidingGenesStart] = slidedGene;
+    const int aux = value[firstGene];
+    value[firstGene] = value[secondGene];
+    value[secondGene] = aux;
 }
 
 const int &Individual::back() const {
