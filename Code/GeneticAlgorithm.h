@@ -3,6 +3,9 @@
 
 #include "inputData.h"
 
+inline size_t maxIterations = 100;
+inline size_t tabuListSize = 10;
+
 constexpr int NUMBER_OF_PARENTS = 2;
 constexpr int SEED = 1;
 
@@ -69,6 +72,8 @@ public:
 
     [[nodiscard]] vector<int> getObjectiveJobOrder() const;
 
+    void changeLeastFittest(const Individual &individual);
+
     void sort();
 
 private:
@@ -89,7 +94,7 @@ class Conclusion {
 public:
     Conclusion(const vector<vector<int>> &processingTime, const vector<int> &deadlines, Individual *individual);
 
-    [[nodiscard]] vector<vector<int>> generateConclusion();
+    [[nodiscard]] vector<vector<int>> generateConclusion() const;
 
     [[nodiscard]] int getObjectiveValue() const;
 private:
@@ -102,13 +107,6 @@ private:
 
     vector<vector<int>> conclusion;
     int objectiveValue;
-
-    [[nodiscard]] bool isJobEarly(size_t i) const;
-    [[nodiscard]] int getLastTaskStartingTime(size_t i) const;
-    [[nodiscard]] bool isNextJobProcessedAfterJobDeadline(size_t i) const;
-    [[nodiscard]] bool isNextJobDependentOnJobConclusion(size_t i) const;
-    [[nodiscard]] size_t nextJobProcessedBeforeJobDeadline(size_t outerI);
-    [[nodiscard]] size_t earlyTaskVerificationFunction(size_t i);
 };
 
 class GeneticAlgorithmRunner{
@@ -132,6 +130,24 @@ private:
     Population population;
 
     chrono::duration<double> timeSpent = chrono::duration<double>();
+};
+
+class TabuSearch {
+public:
+    TabuSearch(const vector<vector<int>> &processingTime, const vector<int> &deadlines, const Individual &individual);
+
+    [[nodiscard]]
+    vector<Individual> getNeighbors(const Individual &individual) const;
+
+    [[nodiscard]]
+    vector<int> getBestIndividualValue() {
+        return this->bestIndividualValue;
+    }
+private:
+    const vector<vector<int>> &processingTime;
+    const vector<int> &deadlines;
+
+    vector<int> bestIndividualValue;
 };
 
 #endif //GENETICALGORITHM_H
