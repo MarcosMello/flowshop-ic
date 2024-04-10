@@ -1,0 +1,28 @@
+\begin{table}[H]
+        \renewcommand{\arraystretch}{1.2}
+        \centering
+        \caption{CAPTION HERE} \label{LABEL HERE}
+        \resizebox{\textwidth}{!}{%
+            \begin{tabular}{l *{12}{c}}
+                \toprule
+                \multirow[c]{2}{*}{\textbf{}} && \multirow[c]{2}{*}{\textbf{Instância}} && \multirow[c]{2}{*}{\shortstack[c]{\textbf{Solução}\\ \textbf{Ótima}}} && \multicolumn{3}{c}{\textbf{CPLEX}} && \multicolumn{3}{c}{\textbf{AG}} \\
+                \cline{7-9} \cline{11-13}
+                && && && \textbf{Solução} & \textbf{Tempo(seg)} & \textbf{\%Diferença} && \textbf{Solução} & \textbf{Tempo(seg)} & \textbf{\%Diferença} \\
+                \midrule
+\textbf{n10m20} &&1&&1472&&1472&0.040712&0&&1474&0.022672&0.13587\\ \hline
+\textbf{n10m20} &&2&&636&&636&0.042565&0&&636&0.034681&0\\ \hline
+\textbf{n10m20} &&3&&599&&599&0.027605&0&&599&0.03802&0\\ \hline
+\textbf{n50m20} &&1&&22500&&22500&3.04336&0&&22500&7.77518&0\\ \hline
+\textbf{n80m20} &&2&&48399&&48399&7.68709&0&&48399&57.1429&0\\ \hline
+\textbf{n80m20} &&3&&51951&&51951&6.56533&0&&51954&48.3854&0.00577467\\ \hline
+\textbf{n50m20} &&2&&18523&&18523&3.94103&0&&18523&8.9684&0\\ \hline
+\textbf{n80m20} &&1&&55492&&55492&5.67574&0&&55492&52.9599&0\\ \hline
+\textbf{n50m20} &&3&&18684&&18684&1.53521&0&&18684&10.4806&0\\ \hline
+\textbf{n5m10} &&1&&173&&173&0.005464&0&&173&0.009318&0\\ \hline
+\textbf{n5m10} &&3&&245&&245&0.003566&0&&245&0.008516&0\\ \hline
+\textbf{n5m10} &&2&&302&&302&0.002388&0&&302&0.008851&0\\ \hline
+\bottomrule
+                \end{tabular}
+            }
+            \caption*{Fonte: Produção do próprio autor.}
+        \end{table}
