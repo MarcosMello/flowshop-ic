@@ -7,7 +7,7 @@
 inline bool isCplexVerboseActive = false;
 inline bool shouldPrintSolution = false;
 
-inline int timeLimitInSeconds = 3600;
+inline int timeLimitInSeconds = 1800;
 inline int threadLimit = 1;
 
 inline IloNum cplexSolution;
