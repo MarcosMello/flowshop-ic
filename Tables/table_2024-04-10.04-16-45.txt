@@ -1,0 +1,27 @@
+\begin{table}[ht!]
+            \renewcommand{\arraystretch}{1.2}
+            \centering
+            \caption{CAPTION HERE} \label{LABEL HERE}
+            \resizebox{\textwidth}{!}{%
+                \begin{tabular}{l *{9}{c}}
+                    \toprule
+                    \multirow[c]{2}{*}{\textbf{}} & \multirow[c]{2}{*}{\textbf{Instância}} && \multicolumn{3}{c}{\textbf{CPLEX}} && \multicolumn{3}{c}{\textbf{AG}} \\
+                    \cline{4-6} \cline{8-10} && & \textbf{Solução} & \textbf{Tempo(seg)} & \textbf{\%Diferença} && \textbf{Solução} & \textbf{Tempo(seg)} & \textbf{\%Diferença} \\
+                    \midrule
+\textbf{n10m20} &1&&7984&6.64816&0&&7922&0.00632&0.782631\\ \hline
+\textbf{n10m20} &2&&6975&1.07037&0&&6975&0.006384&0\\ \hline
+\textbf{n10m20} &3&&7408&10.8097&0&&7408&0.006626&0\\ \hline
+\textbf{n50m20} &1&&63993&1800.17&0&&13303&1.10513&381.042\\ \hline
+\textbf{n80m20} &2&&160135&1800.07&0&&35599&8.21947&349.83\\ \hline
+\textbf{n80m20} &3&&165411&1800.05&0&&14596&18.171&1033.26\\ \hline
+\textbf{n50m20} &2&&73926&65.1629&0&&9638&2.89775&667.026\\ \hline
+\textbf{n80m20} &1&&155438&1800.06&0&&17295&10.0609&798.745\\ \hline
+\textbf{n50m20} &3&&73129&1800.02&0&&20542&0.852643&255.997\\ \hline
+\textbf{n5m10} &1&&1512&0.013311&0&&1312&0.004014&15.2439\\ \hline
+\textbf{n5m10} &3&&1800&0.015038&0&&1788&0.004214&0.671141\\ \hline
+\textbf{n5m10} &2&&1160&0.013407&2.41379&&1188&0.004284&0\\ \hline
+\bottomrule
+                \end{tabular}
+            }
+            \caption*{Fonte: Produção do próprio autor.}
+        \end{table}
