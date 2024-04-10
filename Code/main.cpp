@@ -4,12 +4,12 @@
 
 string path = "../Code/data/equal_deadlines";
 
-size_t mutationProbability = 10;
-size_t individualTransferRate = 20;
-size_t populationSize = 1000;
+size_t mutationProbability = 40;
+size_t individualTransferRate = 10;
+size_t populationSize = 20;
 
-size_t maximumIterations = 200;
-size_t maxIterationsWithoutImprovement = 10;
+size_t maximumIterations = 100;
+size_t maxIterationsWithoutImprovement = 50;
 
 string caption = "CAPTION HERE";
 string label = "LABEL HERE";
@@ -21,7 +21,9 @@ void parseArguments(const int argc, char *argv[]) {
         if (string argument = argv[i]; argument == "-cplexVerbose") {
             isCplexVerboseActive = true;
         } else if(argument == "-printSolutions") {
-            shouldPrintSolution = true;
+             shouldPrintSolution = true;
+        } else if(argument == "-dontPrintTable") {
+            shouldPrintTable = false;
         } else if (argument.find("-cplexTimeLimit=") == 0) {
             string strippedArgument = argument.substr(16);
             timeLimitInSeconds = static_cast<int>(strtol(strippedArgument.c_str(), nullptr, 10));
@@ -96,18 +98,20 @@ int main(const int argc, char *argv[]) {
         const auto data = InputData(path);
 
         if (shouldPrintSolution && useCPLEX) {
-            cout << "Cplex" << " ( " << data.stem << "_" << data.instance << " ): " << endl;
+            cout << "Cplex" << " ( " << data.stem << "_" << data.instance << " ): \n" << endl;
         }
         if (useCPLEX) {
             cplexModelSolver(data);
         }
 
         if (shouldPrintSolution) {
-            cout << "\nGenetic Algorithm" << " ( " << data.stem << "_" << data.instance << " ): " << endl;
+            cout << "\nGenetic Algorithm" << " ( " << data.stem << "_" << data.instance << " ): \n" << endl;
         }
 
         const vector<vector<int>> &processingTime = data.processingTime;
         const vector<int> &deadlines = data.deadlines;
+
+        populationSize += static_cast<int>(sqrt(deadlines.size()));
 
         const GeneticAlgorithmRunner runner(
             maximumIterations,
@@ -121,6 +125,7 @@ int main(const int argc, char *argv[]) {
 
         if (shouldPrintSolution) {
             runner.print();
+            cout << endl;
         }
 
         Line line = hasObjectiveValueReference ?
@@ -132,9 +137,11 @@ int main(const int argc, char *argv[]) {
         latexTable.addLine(line);
     }
 
-    std::ofstream tableFile("../Tables/table_" + currentDateTime() + ".txt");
-    tableFile << latexTable;
-    tableFile.close();
+    if (shouldPrintTable) {
+        std::ofstream tableFile("../Tables/table_" + currentDateTime() + ".txt");
+        tableFile << latexTable;
+        tableFile.close();
+    }
 
     return 0;
 }
