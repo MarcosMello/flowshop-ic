@@ -3,6 +3,8 @@
 
 #include "../cplexModel.h"
 
+inline bool shouldPrintTable = true;
+
 class Line {
 public:
     Line(string filename, string instance, IloNum cplexSolution, chrono::duration<double> cplexTimeElapsed,
