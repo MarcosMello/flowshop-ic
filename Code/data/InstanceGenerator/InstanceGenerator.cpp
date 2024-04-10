@@ -10,6 +10,7 @@ inline auto getRandomNumber(const size_t lowerBound, const size_t upperBound) {
 
 int jobs = 0;
 int machines = 0;
+int instanceNumber = 0;
 
 bool distinctDeliveryDates = false;
 
@@ -21,6 +22,9 @@ void parseArguments(const int argc, char *argv[]) {
         } else if (argument.find("-machines=") == 0) {
             string strippedArgument = argument.substr(10);
             machines = static_cast<int>(strtol(strippedArgument.c_str(), nullptr, 10));
+        } else if (argument.find("-instance=") == 0) {
+            string strippedArgument = argument.substr(10);
+            instanceNumber = static_cast<int>(strtol(strippedArgument.c_str(), nullptr, 10));
         } else if (argument == "-distinct") {
             distinctDeliveryDates = true;
         }
@@ -30,7 +34,7 @@ void parseArguments(const int argc, char *argv[]) {
 int main(const int argc, char *argv[]) {
     parseArguments(argc, argv);
 
-    ofstream outputFile(("n" + to_string(jobs) + "m" + to_string(machines) + ".dat"));
+    ofstream outputFile(("n" + to_string(jobs) + "m" + to_string(machines) + "_" + to_string(instanceNumber) + ".dat"));
 
     outputFile << jobs << "\n" << machines << "\n";
 
