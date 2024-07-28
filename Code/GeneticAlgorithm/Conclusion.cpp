@@ -10,7 +10,7 @@ Conclusion::Conclusion(const vector<vector<int>> &processingTime, const vector<i
 }
 
 [[nodiscard]]
-vector<vector<int>> Conclusion::generateConclusion() const{
+vector<vector<int>> Conclusion::generateConclusion() const {
     vector conclusion(this->machines, vector(this->jobs, 0));
 
     auto safeDecrement = [](const size_t i) -> size_t {

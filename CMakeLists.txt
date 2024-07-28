@@ -17,6 +17,8 @@ add_executable(flowshop_ic
         Code/main.cpp
         Code/Latex/comparisonTable.cpp
         Code/TabuSearch/TabuSearch.cpp
+        Code/NEH.h
+        Code/Heuristic/NEH.cpp
 )
 
 include_directories(/Applications/CPLEX_Studio2211/cplex/include)

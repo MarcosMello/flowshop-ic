@@ -1,8 +1,9 @@
 #include "cplexModel.h"
+#include "NEH.h"
 #include "GeneticAlgorithm.h"
 #include "Latex/ComparisonTable.h"
 
-string path = "../Code/data/equal_deadlines";
+string path = "../Code/data/equal_deadlines/n5m10_1.dat";
 
 size_t mutationProbability = 40;
 size_t individualTransferRate = 10;
@@ -102,6 +103,14 @@ int main(const int argc, char *argv[]) {
         }
         if (useCPLEX) {
             cplexModelSolver(data);
+        }
+
+        if (runNEHAlgorithm) {
+            if (shouldPrintSolution) {
+                cout << "\nNEH Algorithm" << " ( " << data.stem << "_" << data.instance << " ): \n" << endl;
+            }
+
+            Individual bestNEHAlgorithmIndividual = NEHAlgorithm(data);
         }
 
         if (shouldPrintSolution) {
