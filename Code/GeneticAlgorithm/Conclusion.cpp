@@ -10,11 +10,19 @@ Conclusion::Conclusion(const vector<vector<int>> &processingTime, const vector<i
 }
 
 [[nodiscard]]
-vector<vector<int>> Conclusion::generateConclusion() const{
+vector<vector<int>> Conclusion::generateConclusion() const {
     vector conclusion(this->machines, vector(this->jobs, 0));
 
     auto safeDecrement = [](const size_t i) -> size_t {
         return i > 0 ? i - 1 : 0;
+    };
+
+    auto getIndexOnConclusion = [&](const vector<int>::reverse_iterator iterator) -> size_t {
+        return distance(iterator, conclusion.back().rend()) - 1;
+    };
+
+    auto taskStartingTimeOnLastMachine = [&](const vector<int>::reverse_iterator iterator) -> int {
+        return *iterator - this->processingTime[this->individual->operator[](getIndexOnConclusion(iterator))].back();
     };
 
     for (size_t i = 0; i < conclusion.size(); i++) {
@@ -24,43 +32,33 @@ vector<vector<int>> Conclusion::generateConclusion() const{
         }
     }
 
-    auto nextTaskStartingTime = [&](const size_t iterator, const size_t machine) -> int {
-        return conclusion[machine][iterator + 1] -
-            this->processingTime[this->individual->operator[](iterator + 1)][machine];
-    };
+    conclusion.back().back() = conclusion.back().back() < deadlines[individual->back()] ?
+        deadlines[individual->back()] : conclusion.back().back();
 
-    conclusion.back().back() = conclusion.back().back() < deadlines[individual->operator[](jobs - 1)] ?
-        deadlines[individual->operator[](jobs - 1)] : conclusion.back().back();
+    for (auto reverseIterator = conclusion.back().rbegin() + 1; reverseIterator != conclusion.back().rend(); ++reverseIterator) {
+        const auto nextIterator = reverseIterator - 1;
 
-    for (size_t i = 2; i <= conclusion.back().size(); i++) {
-        const size_t backwardsIterator = conclusion.back().size() - i;
-
-        if (conclusion.back()[backwardsIterator] < deadlines[individual->operator[](backwardsIterator)]) {
-            if (nextTaskStartingTime(backwardsIterator, conclusion.size() - 1) >= deadlines[individual->operator[](backwardsIterator)]) {
-                conclusion.back()[backwardsIterator] = deadlines[individual->operator[](backwardsIterator)];
-            } else {
-                size_t k = backwardsIterator, quantityOfEarlyTasks = 1, quantityOfChainedTasks = 1;
-
-                while (k < jobs - 1 &&
-                       nextTaskStartingTime(k, conclusion.size() - 1) == conclusion.back()[k]) {
-                    if (conclusion.back()[k + 1] < deadlines[individual->operator[](k + 1)]) {
-                        quantityOfEarlyTasks++;
-                    }
-
-                    k++;
-                    quantityOfChainedTasks++;
-                }
-
-                if (quantityOfEarlyTasks > quantityOfChainedTasks/2) {
-                    for (size_t j = backwardsIterator; j <= k; j++) {
-                        conclusion.back()[j]++;
-                    }
-
-                    i--;
-                }
-            }
+        if (*reverseIterator > deadlines[getIndexOnConclusion(reverseIterator)]) {
+            continue;
         }
+
+        if (taskStartingTimeOnLastMachine(nextIterator) >= deadlines[getIndexOnConclusion(reverseIterator)]) {
+            *reverseIterator = deadlines[getIndexOnConclusion(reverseIterator)];
+            continue;
+        }
+
+        *reverseIterator = taskStartingTimeOnLastMachine(nextIterator);
     }
+
+    for (const auto conclusionTime : conclusion.back()) {
+        cout << conclusionTime << " ";
+    }
+    cout << endl;
+
+    for (const auto job: individual->getValue()) {
+        cout << job + 1 << " ";
+    }
+    cout << endl;
 
     return conclusion;
 }
