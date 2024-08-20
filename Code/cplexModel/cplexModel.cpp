@@ -1,8 +1,6 @@
 #include "../cplexModel.h"
 
 CplexSolver::CplexSolver(const InputData &instanceData) :
-    instanceData(instanceData),
-    individual(vector<int>(jobs)),
     jobs(instanceData.jobs),
     machines(instanceData.machines),
     processingTime(instanceData.processingTime),
@@ -36,7 +34,7 @@ CplexSolver::CplexSolver(const InputData &instanceData) :
             }
         }
     }
-    catch (IloException &e) {
+    catch ([[maybe_unused]] IloException &e) {
         cerr << "Concert exception caught" << endl;
         throw;
     } catch (...) {
@@ -48,12 +46,23 @@ CplexSolver::CplexSolver(const InputData &instanceData) :
 }
 
 CplexSolver::CplexSolver(const InputData& instanceData, const vector<int>& individual) :
-    instanceData(instanceData),
+    CplexSolver(individual,
+                instanceData.jobs,
+                instanceData.machines,
+                instanceData.processingTime,
+                instanceData.deadlines
+    ) {}
+
+CplexSolver::CplexSolver(const vector<int>& individual,
+                         const int jobs,
+                         const int machines,
+                         const vector<vector<int>>& processingTime,
+                         const vector<int>& deadlines) :
     individual(individual),
-    jobs(instanceData.jobs),
-    machines(instanceData.machines),
-    processingTime(instanceData.processingTime),
-    deadlines(instanceData.deadlines) {
+    jobs(jobs),
+    machines(machines),
+    processingTime(processingTime),
+    deadlines(deadlines) {
     IloEnv env;
 
     try {
@@ -75,7 +84,7 @@ CplexSolver::CplexSolver(const InputData& instanceData, const vector<int>& indiv
         this->cplexSolution = cplexSolver.getObjValue();
         this->cplexTimeElapsed = timeSpent;
     }
-    catch (IloException &e) {
+    catch ([[maybe_unused]] IloException &e) {
         cerr << "Concert exception caught" << endl;
         throw;
     } catch (...) {
@@ -205,6 +214,14 @@ IloCplex CplexSolver::modelSolver(IloEnv env) {
 
         return cplexSolver;
     }, variantPosition);
+}
+
+double CplexSolver::getCplexSolution() const {
+    return this->cplexSolution;
+}
+
+chrono::duration<double> CplexSolver::getCplexTimeElapsed() const {
+    return this->cplexTimeElapsed;
 }
 
 void CplexSolver::print() const {

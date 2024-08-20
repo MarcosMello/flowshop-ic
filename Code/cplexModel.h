@@ -13,14 +13,21 @@ inline int threadLimit = 1;
 class CplexSolver {
 public:
     explicit CplexSolver(const InputData& instanceData);
+    CplexSolver(const vector<int>& individual,
+                int jobs,
+                int machines,
+                const vector<vector<int>>& processingTime,
+                const vector<int>& deadlines);
     CplexSolver(const InputData& instanceData, const vector<int>& individual);
 
     IloCplex modelSolver(IloEnv env);
 
+    [[nodiscard]] double getCplexSolution() const;
+    [[nodiscard]] chrono::duration<double> getCplexTimeElapsed() const;
+
     void print() const;
 
 private:
-    const InputData instanceData;
     vector<int> individual;
 
     int jobs, machines;

@@ -103,12 +103,13 @@ int main(const int argc, char *argv[]) {
         if (useCPLEX) {
             const CplexSolver cplexModelSolver(data);
 
+            cplexSolution = cplexModelSolver.getCplexSolution();
+            cplexTimeElapsed = cplexModelSolver.getCplexTimeElapsed();
+
             if (shouldPrintSolution) {
                 cplexModelSolver.print();
             }
         }
-
-        return 0;
 
         if (shouldPrintSolution) {
             cout << "\nGenetic Algorithm" << " ( " << data.stem << "_" << data.instance << " ): \n" << endl;
