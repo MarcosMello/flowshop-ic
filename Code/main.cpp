@@ -92,8 +92,8 @@ int main(const int argc, char *argv[]) {
 
     const vector<string> filesPaths =  generateFilesPathsVector(path);
     for (const auto &path: filesPaths) {
-        cplexSolution = 0;
-        cplexTimeElapsed = chrono::duration<double>(0);
+        IloNum cplexSolution = 0;
+        auto cplexTimeElapsed = chrono::duration<double>(0);
 
         const auto data = InputData(path);
 
@@ -101,8 +101,14 @@ int main(const int argc, char *argv[]) {
             cout << "Cplex" << " ( " << data.stem << "_" << data.instance << " ): \n" << endl;
         }
         if (useCPLEX) {
-            cplexModelSolver(data);
+            const CplexSolver cplexModelSolver(data);
+
+            if (shouldPrintSolution) {
+                cplexModelSolver.print();
+            }
         }
+
+        return 0;
 
         if (shouldPrintSolution) {
             cout << "\nGenetic Algorithm" << " ( " << data.stem << "_" << data.instance << " ): \n" << endl;
