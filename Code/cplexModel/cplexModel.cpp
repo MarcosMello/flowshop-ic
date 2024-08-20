@@ -1,23 +1,103 @@
 #include "../cplexModel.h"
 
-int jobs, machines;
-vector< vector<int> > processingTime;
-vector<int> deadlines;
-
-void cplexModelSolver(const InputData& instanceData){
-    jobs = instanceData.jobs;
-    machines = instanceData.machines;
-    processingTime = instanceData.processingTime;
-    deadlines = instanceData.deadlines;
-
+CplexSolver::CplexSolver(const InputData &instanceData) :
+    jobs(instanceData.jobs),
+    machines(instanceData.machines),
+    processingTime(instanceData.processingTime),
+    deadlines(instanceData.deadlines) {
     IloEnv env;
 
-    const auto timerStart = chrono::system_clock::now();
-
-    try{
-        IloModel model(env);
+    try {
+        const auto timerStart = chrono::system_clock::now();
 
         IloArray<IloIntVarArray> position(env, jobs);
+
+        for (int i = 0; i < jobs; i++) {
+            position[i] = IloIntVarArray(env, jobs, 0, IloIntMax);
+        }
+
+        this->variantPosition = position;
+
+        const IloCplex cplexSolver = modelSolver(env);
+
+        const auto timerEnd = chrono::system_clock::now();
+        const chrono::duration<double> timeSpent = timerEnd - timerStart;
+
+        this->cplexSolution = cplexSolver.getObjValue();
+        this->cplexTimeElapsed = timeSpent;
+
+        for (int i = 0; i < jobs; i++) {
+            for(int j = 0; j < jobs; j++) {
+                if(cplexSolver.getIntValue(position[j][i])) {
+                    this->individual.emplace_back(j);
+                }
+            }
+        }
+    }
+    catch ([[maybe_unused]] IloException &e) {
+        cerr << "Concert exception caught" << endl;
+        throw;
+    } catch (...) {
+        cerr << "Unknown exception caught" << endl;
+        throw;
+    }
+
+    env.end();
+}
+
+CplexSolver::CplexSolver(const InputData& instanceData, const vector<int>& individual) :
+    CplexSolver(individual,
+                instanceData.jobs,
+                instanceData.machines,
+                instanceData.processingTime,
+                instanceData.deadlines
+    ) {}
+
+CplexSolver::CplexSolver(const vector<int>& individual,
+                         const int jobs,
+                         const int machines,
+                         const vector<vector<int>>& processingTime,
+                         const vector<int>& deadlines) :
+    individual(individual),
+    jobs(jobs),
+    machines(machines),
+    processingTime(processingTime),
+    deadlines(deadlines) {
+    IloEnv env;
+
+    try {
+        const auto timerStart = chrono::system_clock::now();
+
+        vector position(this->jobs, vector(this->jobs, 0));
+
+        for (int i = 0; i < position.size(); i++) {
+            position[this->individual[i]][i] = 1;
+        }
+
+        this->variantPosition = position;
+
+        const IloCplex cplexSolver = modelSolver(env);
+
+        const auto timerEnd = chrono::system_clock::now();
+        const chrono::duration<double> timeSpent = timerEnd - timerStart;
+
+        this->cplexSolution = cplexSolver.getObjValue();
+        this->cplexTimeElapsed = timeSpent;
+    }
+    catch ([[maybe_unused]] IloException &e) {
+        cerr << "Concert exception caught" << endl;
+        throw;
+    } catch (...) {
+        cerr << "Unknown exception caught" << endl;
+        throw;
+    }
+
+    env.end();
+}
+
+IloCplex CplexSolver::modelSolver(IloEnv env) {
+    return visit([this, env](auto&& position){
+        IloModel model(env);
 
         IloIntVarArray earliness(env, jobs, 0, IloIntMax);
         IloIntVarArray tardiness(env, jobs, 0, IloIntMax);
@@ -30,7 +110,6 @@ void cplexModelSolver(const InputData& instanceData){
         IloIntVar firstInactivity(env, 0, IloIntMax);
 
         for (int i = 0; i < jobs; i++) {
-            position[i] = IloIntVarArray(env, jobs, 0, IloIntMax);
             waitingTime[i] = IloIntVarArray(env, machines, 0, IloIntMax);
 
             if (i < jobs - 1) {
@@ -133,34 +212,26 @@ void cplexModelSolver(const InputData& instanceData){
             throw;
         }
 
-        const auto timerEnd = chrono::system_clock::now();
-        const chrono::duration<double> timeSpent = timerEnd - timerStart;
+        return cplexSolver;
+    }, variantPosition);
+}
 
-        cplexSolution = cplexSolver.getObjValue();
-        cplexTimeElapsed = timeSpent;
+double CplexSolver::getCplexSolution() const {
+    return this->cplexSolution;
+}
 
-        if (shouldPrintSolution) {
-            cout << "Objective Value: " << cplexSolver.getObjValue() << endl;
+chrono::duration<double> CplexSolver::getCplexTimeElapsed() const {
+    return this->cplexTimeElapsed;
+}
 
-            cout << "Job Order: ";
-            for(int i = 0; i < jobs; i++){
-                for(int j = 0; j < jobs; j++){
-                    if(cplexSolver.getIntValue(position[j][i])) {
-                        cout << (j + 1) << " \n" [i == jobs];
-                    }
-                }
-            }
-            cout << endl;
+void CplexSolver::print() const {
+    cout << "Objective Value: " << this->cplexSolution << endl;
 
-            cout << "Time spent: " << timeSpent.count() << endl;
-        }
-    } catch (IloException &e) {
-        cerr << "Concert exception caught" << endl;
-        throw;
-    } catch (...) {
-        cerr << "Unknown exception caught" << endl;
-        throw;
+    cout << "Job Order: ";
+    for(int i = 0; i < jobs; i++) {
+        cout << (individual[i] + 1) << " \n" [i == jobs];
     }
+    cout << endl;
 
-    env.end();
+    cout << "Time spent: " << cplexTimeElapsed.count() << endl;
 }
