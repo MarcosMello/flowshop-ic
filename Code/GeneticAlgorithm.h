@@ -7,7 +7,7 @@ inline size_t maxIterations = 100;
 inline size_t tabuListSize = 10;
 
 constexpr int NUMBER_OF_PARENTS = 2;
-constexpr int SEED = 1;
+constexpr int SEED = 1; //mudar a seed para testes 30x, para o grafico tem que manter a seed
 
 inline seed_seq seed{SEED};
 inline auto defaultRandomEngine = default_random_engine(seed);
@@ -27,8 +27,12 @@ inline vector<int> getRandomJobPermutation(const size_t length) {
 
 class Individual{
 public:
-    Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines, vector<int> value);
+    Individual(const vector<vector<int>> &processingTime,
+               const vector<int> &deadlines,
+               vector<int> value,
+               bool cplexConclusion);
     Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines);
+    Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines, bool cplexConclusion);
 
     [[nodiscard]] vector<int> getValue() const;
     [[nodiscard]] size_t getFitness() const;
@@ -50,7 +54,7 @@ private:
     vector<int> value;
     size_t fitness;
 
-    void calculate_fitness(const vector<vector<int>> &processingTime, const vector<int> &deadlines);
+    void calculate_fitness(const vector<vector<int>> &processingTime, const vector<int> &deadlines, bool cplexConclusion);
 };
 
 class Population {
@@ -92,6 +96,10 @@ private:
 
 class Conclusion {
 public:
+    Conclusion(const vector<vector<int>> &processingTime,
+               const vector<int> &deadlines,
+               Individual *individual,
+               bool cplexConclusion);
     Conclusion(const vector<vector<int>> &processingTime, const vector<int> &deadlines, Individual *individual);
 
     [[nodiscard]] vector<vector<int>> generateConclusion() const;

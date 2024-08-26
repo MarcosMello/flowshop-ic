@@ -3,7 +3,9 @@
 #include "GeneticAlgorithm.h"
 #include "Latex/ComparisonTable.h"
 
-string path = "../Code/data/equal_deadlines/n5m10_1.dat";
+#define FASTIO ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+string path = "../Code/data/equal_deadlines";
 
 size_t mutationProbability = 40;
 size_t individualTransferRate = 10;
@@ -87,6 +89,8 @@ std::string currentDateTime() {
 }
 
 int main(const int argc, char *argv[]) {
+    FASTIO
+
     parseArguments(argc, argv);
 
     auto latexTable = Table(caption, label, hasObjectiveValueReference);
@@ -127,7 +131,7 @@ int main(const int argc, char *argv[]) {
         const vector<vector<int>> &processingTime = data.processingTime;
         const vector<int> &deadlines = data.deadlines;
 
-        populationSize += static_cast<int>(sqrt(deadlines.size()));
+        populationSize += static_cast<int>(sqrt(deadlines.size())); //ceil
 
         const GeneticAlgorithmRunner runner(
             maximumIterations,

@@ -58,7 +58,7 @@ void Population::generateNextGeneration() {
 
         const vector<int> childVector = population[selectedParents.front()]
             .createChildValueVector(population[selectedParents.back()]);
-        auto child = Individual(this->processingTime, this->deadlines, childVector);
+        auto child = Individual(this->processingTime, this->deadlines, childVector, false);
 
         if (getRandomNumber(0, 100) < this->mutationProbability) {
             child.mutate();

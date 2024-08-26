@@ -22,7 +22,9 @@ GeneticAlgorithmRunner::GeneticAlgorithmRunner(const size_t maximumIterations, c
             const auto newIndividualValue =
                 TabuSearch(processingTime, deadlines, population.front()).getBestIndividualValue();
 
-            population.changeLeastFittest(Individual(processingTime, deadlines, newIndividualValue));
+            population.changeLeastFittest(
+                Individual(processingTime, deadlines, newIndividualValue, false)
+            );
         }
     }
 

@@ -27,6 +27,7 @@ public:
 
         return this->deadline < other.deadline;
     }
+
 private:
     size_t id;
 
@@ -58,7 +59,10 @@ Individual makeIndividualWithJobPermutation(const vector<size_t>& jobPermutation
         deadlines[i] = instanceData.deadlines[jobPermutation[i]];
     }
 
-    return {processingTime, deadlines};
+    vector<int> value(jobPermutation.size());
+    iota(begin(value), end(value), 0);
+
+    return {processingTime, deadlines, value, true};
 }
 
 [[nodiscard]]

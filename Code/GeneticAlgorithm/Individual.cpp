@@ -1,12 +1,18 @@
 #include "../GeneticAlgorithm.h"
 
 Individual::Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines,
-    vector<int> value) : value(std::move(value)), fitness(0) {
-    calculate_fitness(processingTime, deadlines);
+    vector<int> value, const bool cplexConclusion) : value(std::move(value)), fitness(0) {
+    calculate_fitness(processingTime, deadlines, cplexConclusion);
 }
 
-Individual::Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines) :
-    Individual(processingTime, deadlines, getRandomJobPermutation(deadlines.size())) {}
+Individual::Individual(const vector<vector<int>> &processingTime,
+                       const vector<int> &deadlines,
+                       const bool cplexConclusion) :
+    Individual(processingTime, deadlines, getRandomJobPermutation(deadlines.size()), cplexConclusion) {}
+
+Individual::Individual(const vector<vector<int>> &processingTime,
+                       const vector<int> &deadlines) :
+    Individual(processingTime, deadlines, getRandomJobPermutation(deadlines.size()), false) {}
 
 vector<int> Individual::getValue() const {
     return this->value;
@@ -61,6 +67,8 @@ const int &Individual::back() const {
     return this->value.back();
 }
 
-void Individual::calculate_fitness(const vector<vector<int>> &processingTime, const vector<int> &deadlines) {
-    fitness = Conclusion(processingTime, deadlines, this).getObjectiveValue();
+void Individual::calculate_fitness(const vector<vector<int>> &processingTime,
+                                   const vector<int> &deadlines,
+                                   const bool cplexConclusion) {
+    fitness = Conclusion(processingTime, deadlines, this, cplexConclusion).getObjectiveValue();
 }
