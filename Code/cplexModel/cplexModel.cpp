@@ -24,6 +24,7 @@ CplexSolver::CplexSolver(const InputData &instanceData) :
         const chrono::duration<double> timeSpent = timerEnd - timerStart;
 
         this->cplexSolution = cplexSolver.getObjValue();
+        this->cplexGap = cplexSolver.getMIPRelativeGap();
         this->cplexTimeElapsed = timeSpent;
 
         for (int i = 0; i < jobs; i++) {
@@ -82,6 +83,7 @@ CplexSolver::CplexSolver(const vector<int>& individual,
         const chrono::duration<double> timeSpent = timerEnd - timerStart;
 
         this->cplexSolution = cplexSolver.getObjValue();
+        this->cplexGap = cplexSolver.getMIPRelativeGap();
         this->cplexTimeElapsed = timeSpent;
     }
     catch ([[maybe_unused]] IloException &e) {
@@ -226,6 +228,8 @@ chrono::duration<double> CplexSolver::getCplexTimeElapsed() const {
 
 void CplexSolver::print() const {
     cout << "Objective Value: " << this->cplexSolution << endl;
+
+    cout << "Gap: " << this->cplexGap << endl;
 
     cout << "Job Order: ";
     for(int i = 0; i < jobs; i++) {

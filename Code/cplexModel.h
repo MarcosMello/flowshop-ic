@@ -37,6 +37,7 @@ private:
     variant<vector<vector<int>>, IloArray<IloIntVarArray>> variantPosition;
 
     double cplexSolution;
+    double cplexGap;
     chrono::duration<double> cplexTimeElapsed = chrono::duration<double>(0);
 };
 
