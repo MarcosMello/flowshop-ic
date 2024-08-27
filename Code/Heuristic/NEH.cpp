@@ -69,7 +69,7 @@ Individual makeIndividualWithJobPermutation(const vector<size_t>& jobPermutation
 Individual NEHAlgorithm(const InputData& instanceData) {
     vector<Job> jobs;
 
-    for (size_t i = 0; i < instanceData.jobs; i++) {
+    for (size_t i = 0; i < static_cast<size_t>(instanceData.jobs); i++) {
         jobs.emplace_back(i, instanceData.deadlines[i], instanceData.processingTime[i]);
     }
 
