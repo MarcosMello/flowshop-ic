@@ -71,7 +71,7 @@ CplexSolver::CplexSolver(const vector<int>& individual,
 
         vector position(this->jobs, vector(this->jobs, 0));
 
-        for (int i = 0; i < position.size(); i++) {
+        for (size_t i = 0; i < position.size(); i++) {
             position[this->individual[i]][i] = 1;
         }
 

@@ -1,7 +1,7 @@
 #ifndef FLOWSHOP_IC_INPUTDATA_H
 #define FLOWSHOP_IC_INPUTDATA_H
 
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 
 using namespace std;
 
