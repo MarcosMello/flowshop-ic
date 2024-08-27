@@ -18,6 +18,7 @@ string caption = "CAPTION HERE";
 string label = "LABEL HERE";
 
 bool useCPLEX = true;
+bool useOnlyCPLEX = false;
 
 void parseArguments(const int argc, char *argv[]) {
     for (int i = 0; i < argc; i++) {
@@ -58,6 +59,15 @@ void parseArguments(const int argc, char *argv[]) {
             maxIterationsWithoutImprovement = static_cast<size_t>(strtol(strippedArgument.c_str(), nullptr, 10));
         } else if (argument == "-noCplex") {
             useCPLEX = false;
+        } else if (argument == "-useOnlyCPLEX") {
+            isCplexVerboseActive = true;
+            shouldPrintSolution = true;
+            useOnlyCPLEX = true;
+            useCPLEX = true;
+        } else if (argument == "-geneticAlgorithmLog") {
+            geneticAlgorithmLog = true;
+        } else if (argument == "-noHeuristic") {
+            runNEHAlgorithm = false;
         }
     }
 }
@@ -105,15 +115,23 @@ int main(const int argc, char *argv[]) {
         if (shouldPrintSolution && useCPLEX) {
             cout << "Cplex" << " ( " << data.stem << "_" << data.instance << " ): \n" << endl;
         }
-        if (useCPLEX) {
+        if (useCPLEX || useOnlyCPLEX) {
             const CplexSolver cplexModelSolver(data);
 
             cplexSolution = cplexModelSolver.getCplexSolution();
             cplexTimeElapsed = cplexModelSolver.getCplexTimeElapsed();
 
             if (shouldPrintSolution) {
+                if (useOnlyCPLEX) {
+                    cout << "\n";
+                }
+
                 cplexModelSolver.print();
             }
+        }
+
+        if (useOnlyCPLEX) {
+            return 0;
         }
 
         if (runNEHAlgorithm) {
@@ -131,7 +149,7 @@ int main(const int argc, char *argv[]) {
         const vector<vector<int>> &processingTime = data.processingTime;
         const vector<int> &deadlines = data.deadlines;
 
-        populationSize += static_cast<int>(sqrt(deadlines.size())); //ceil
+        populationSize += ceil(sqrt(deadlines.size()));
 
         const GeneticAlgorithmRunner runner(
             maximumIterations,
