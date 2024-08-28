@@ -129,19 +129,15 @@ IloCplex CplexSolver::modelSolver(IloEnv env) {
         IloConstraintArray constraints(env);
 
         IloExpr firstJobConclusionTime(env);
-        firstJobConclusionTime += firstInactivity;
-
         for (int k = 0; k < machines; k++){
             for (int i = 0; i < jobs; i++){
                 firstJobConclusionTime += position[i][0] * processingTime[i][k];
             }
+
+            firstJobConclusionTime += waitingTime[0][k];
         }
 
-        for (int i = 0; i < machines; i++){
-            firstJobConclusionTime += waitingTime[0][i];
-        }
-
-        constraints.add(conclusion[0] == firstJobConclusionTime);
+        constraints.add(conclusion[0] == firstInactivity + firstJobConclusionTime);
 
         IloExprArray jobConclusionTime(env, jobs);
 
@@ -191,7 +187,7 @@ IloCplex CplexSolver::modelSolver(IloEnv env) {
                 positionRows[i] += position[i][j];
                 positionColumns[i] += position[j][i];
 
-                conclusionByJob[i] += position[i][j] * deadlines[i];
+                conclusionByJob[i] += position[j][i] * deadlines[j];
             }
 
             constraints.add(positionRows[i] == 1);
