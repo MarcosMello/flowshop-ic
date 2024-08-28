@@ -8,7 +8,7 @@ GeneticAlgorithmRunner::GeneticAlgorithmRunner(const size_t maximumIterations, c
     population(mutationProbability, individualTransferRate, populationSize, processingTime, deadlines){
     const auto timerStart = chrono::system_clock::now();
 
-    size_t objectiveValue = SIZE_T_MAX;
+    size_t objectiveValue = numeric_limits<size_t>::max();
 
     while(iteration++ < maximumIterations && iterationsWithoutImprovement < maximumIterationsWithoutImprovement) {
         iterationsWithoutImprovement++;
