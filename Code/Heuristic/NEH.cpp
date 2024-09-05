@@ -62,11 +62,11 @@ Individual makeIndividualWithJobPermutation(const vector<size_t>& jobPermutation
     vector<int> value(jobPermutation.size());
     iota(begin(value), end(value), 0);
 
-    return {processingTime, deadlines, value, true};
+    return {processingTime, deadlines, value, false};
 }
 
 [[nodiscard]]
-Individual NEHAlgorithm(const InputData& instanceData) {
+pair<vector<int>, size_t> NEHAlgorithm(const InputData& instanceData) {
     vector<Job> jobs;
 
     for (size_t i = 0; i < instanceData.jobs; i++) {
@@ -75,28 +75,38 @@ Individual NEHAlgorithm(const InputData& instanceData) {
 
     sort(jobs.begin(), jobs.end());
 
-    for (const Job& job : jobs) {
-        cout << job.toString() << endl;
+    if (nehAlgorithmLog) {
+        for (const Job& job : jobs) {
+            cout << job.toString() << endl;
+        }
     }
-    cout << endl;
 
     auto jobIterator = jobs.begin();
 
     vector ordered {jobIterator->getId()};
     ++jobIterator;
 
+    size_t bestIndividualValue = 0;
+
     while (jobIterator != jobs.end()) {
         Job jobToBeAdded = *(jobIterator);
 
         vector jobPermutations {getJobPermutations(ordered, jobToBeAdded.getId())};
 
-        for (const auto& jobPermutation : jobPermutations) {
-            for (const auto job : jobPermutation) {
-                cout << job + 1 << " ";
+        if (nehAlgorithmLog) {
+            cout << endl;
+            for (size_t i = 0; i < jobPermutations.size(); i++) {
+                auto jobPermutation = jobPermutations[i];
+
+                for (size_t j = 0; j < jobPermutation.size(); j++) {
+                    cout << jobPermutation[j] + 1
+                         << " ," [(j + 1) == jobPermutation.size() && (i + 1) != jobPermutations.size()];
+                }
+
+                cout << " ";
             }
-            cout << ", ";
+            cout << endl;
         }
-        cout << endl;
 
         vector bestJobPermutation = jobPermutations.front();
         Individual bestIndividual = makeIndividualWithJobPermutation(bestJobPermutation, instanceData);
@@ -104,32 +114,49 @@ Individual NEHAlgorithm(const InputData& instanceData) {
         for (const auto& jobPermutation : jobPermutations) {
             Individual actualIndividual = makeIndividualWithJobPermutation(jobPermutation, instanceData);
 
-            cout << "atual: " << actualIndividual.getFitness() << "- best: " << bestIndividual.getFitness() << endl;
+            if (nehAlgorithmLog) {
+                cout << "This Fitness Value: " << actualIndividual.getFitness()
+                     << " - Best Fitness Value: " << bestIndividual.getFitness() << endl;
+            }
 
             if (actualIndividual.getFitness() < bestIndividual.getFitness()) {
                 bestIndividual = actualIndividual;
+                bestIndividualValue = bestIndividual.getFitness();
                 bestJobPermutation = jobPermutation;
             }
         }
 
         ordered = bestJobPermutation;
 
-        cout << "Best Job Permutation: ";
-        for (const auto job : bestJobPermutation) {
-            cout << job + 1 << " ";
+        if (nehAlgorithmLog) {
+            printNEHAlgorithm(bestJobPermutation, bestIndividualValue, "This Round Best Job Permutation: ");
         }
-        cout << endl;
 
         ++jobIterator;
     }
 
-    for (const auto jobID : ordered) {
-        cout << jobID + 1 << " ";
-    }
-    cout << endl;
+    vector finalOrderedJobs = [ordered]() -> vector<int> {
+        vector<int> _finalOrderedJobs(ordered.size());
 
-    const Individual bestIndividual = makeIndividualWithJobPermutation(ordered, instanceData);
-    cout << bestIndividual.getFitness() << endl;
+        for (size_t i = 0; i < ordered.size(); i++) {
+            _finalOrderedJobs[i] = static_cast<int>(ordered[i]);
+        }
 
-    return bestIndividual;
+        return _finalOrderedJobs;
+    }();
+
+    return {finalOrderedJobs, bestIndividualValue};
+}
+
+void printNEHAlgorithm(const variant<vector<size_t>, vector<int>>& variantBestJobPermutation,
+                       size_t fitnessValue, const string& message) {
+    visit([message, fitnessValue](auto&& bestJobPermutation) {
+        cout << message;
+
+        for (const auto job : bestJobPermutation) {
+            cout << job + 1 << " ";
+        }
+
+        cout << "- Fitness Value: " << fitnessValue << endl;
+    }, variantBestJobPermutation);
 }

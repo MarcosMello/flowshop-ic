@@ -67,8 +67,9 @@ public:
                const vector<vector<int>> &processingTime,
                const vector<int> &deadlines);
 
-    Population(size_t mutationProbability, size_t individualTransferRate, const vector<vector<int>> &processingTime,
-        const vector<int> &deadlines, const vector<Individual>& population);
+    Population(size_t mutationProbability, size_t individualTransferRate, size_t populationSize,
+        const vector<vector<int>> &processingTime, const vector<int> &deadlines,
+        const vector<Individual>& populationIndividualVector);
 
     void generateNextGeneration();
 
@@ -121,6 +122,9 @@ private:
 
 class GeneticAlgorithmRunner{
 public:
+    GeneticAlgorithmRunner(size_t maximumIterations, size_t maximumIterationsWithoutImprovement,
+        const vector<vector<int>> &processingTime, const vector<int> &deadlines, Population population);
+
     GeneticAlgorithmRunner(size_t maximumIterations, size_t maximumIterationsWithoutImprovement,
         size_t mutationProbability, size_t individualTransferRate, size_t populationSize,
         const vector<vector<int>> &processingTime, const vector<int> &deadlines);

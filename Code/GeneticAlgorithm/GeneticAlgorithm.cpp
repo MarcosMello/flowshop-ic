@@ -2,10 +2,25 @@
 
 string geneticAlgorithmLogAsCSV;
 
-GeneticAlgorithmRunner::GeneticAlgorithmRunner(const size_t maximumIterations, const size_t maximumIterationsWithoutImprovement,
-    const size_t mutationProbability, const size_t individualTransferRate,
-    const size_t populationSize, const vector<vector<int>> &processingTime, const vector<int> &deadlines) :
-    population(mutationProbability, individualTransferRate, populationSize, processingTime, deadlines){
+GeneticAlgorithmRunner::GeneticAlgorithmRunner(
+    const size_t maximumIterations,
+    const size_t maximumIterationsWithoutImprovement,
+    const size_t mutationProbability,
+    const size_t individualTransferRate,
+    const size_t populationSize,
+    const vector<vector<int>> &processingTime,
+    const vector<int> &deadlines) : GeneticAlgorithmRunner(
+        maximumIterations,
+        maximumIterationsWithoutImprovement,
+        processingTime,
+        deadlines,
+        Population(mutationProbability, individualTransferRate, populationSize, processingTime, deadlines)) {}
+
+GeneticAlgorithmRunner::GeneticAlgorithmRunner(
+    const size_t maximumIterations,
+    const size_t maximumIterationsWithoutImprovement,
+    const vector<vector<int>> &processingTime,
+    const vector<int> &deadlines, Population population) : population(std::move(population)) {
     const auto timerStart = chrono::system_clock::now();
 
     size_t objectiveValue = numeric_limits<size_t>::max();
@@ -13,7 +28,7 @@ GeneticAlgorithmRunner::GeneticAlgorithmRunner(const size_t maximumIterations, c
     while(iteration++ < maximumIterations && iterationsWithoutImprovement < maximumIterationsWithoutImprovement) {
         iterationsWithoutImprovement++;
 
-        population.generateNextGeneration();
+        this->population.generateNextGeneration();
 
         if (this->getObjectiveValue() < objectiveValue) {
             iterationsWithoutImprovement = 0;
@@ -29,7 +44,7 @@ GeneticAlgorithmRunner::GeneticAlgorithmRunner(const size_t maximumIterations, c
 
         if (iterationsWithoutImprovement == maximumIterationsWithoutImprovement/2) {
             const auto newIndividualValue =
-                TabuSearch(processingTime, deadlines, population.front()).getBestIndividualValue();
+                TabuSearch(processingTime, deadlines, this->population.front()).getBestIndividualValue();
 
             const auto tabuSearchSelectedIndividual =
                 Individual(processingTime, deadlines, newIndividualValue, false);
@@ -39,7 +54,7 @@ GeneticAlgorithmRunner::GeneticAlgorithmRunner(const size_t maximumIterations, c
                 geneticAlgorithmLogAsCSV += to_string(this->getObjectiveValue()) + ", ";
             }
 
-            population.changeLeastFittest(tabuSearchSelectedIndividual);
+            this->population.changeLeastFittest(tabuSearchSelectedIndividual);
         }
     }
 
