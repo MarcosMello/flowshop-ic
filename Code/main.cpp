@@ -134,12 +134,17 @@ int main(const int argc, char *argv[]) {
             return 0;
         }
 
+        optional<vector<int>> bestNEHAlgorithmIndividual;
+
         if (runNEHAlgorithm) {
+            auto [_bestNEHAlgorithmIndividual, fitnessValue] = NEHAlgorithm(data);
+            bestNEHAlgorithmIndividual = _bestNEHAlgorithmIndividual;
+
             if (shouldPrintSolution) {
                 cout << "\nNEH Algorithm" << " ( " << data.stem << "_" << data.instance << " ): \n" << endl;
-            }
 
-            Individual bestNEHAlgorithmIndividual = NEHAlgorithm(data);
+                printNEHAlgorithm(_bestNEHAlgorithmIndividual, fitnessValue, "NEH Best Permutation: ");
+            }
         }
 
         if (shouldPrintSolution) {
@@ -151,15 +156,21 @@ int main(const int argc, char *argv[]) {
 
         populationSize += ceil(sqrt(deadlines.size()));
 
-        const GeneticAlgorithmRunner runner(
-            maximumIterations,
-            maxIterationsWithoutImprovement,
-            mutationProbability,
-            individualTransferRate,
-            populationSize,
-            processingTime,
-            deadlines
-        );
+        const GeneticAlgorithmRunner runner = [bestNEHAlgorithmIndividual, processingTime, deadlines](
+            size_t maximumIterations, size_t maxIterationsWithoutImprovement, size_t mutationProbability,
+            size_t individualTransferRate, size_t populationSize) -> GeneticAlgorithmRunner {
+            if (bestNEHAlgorithmIndividual.has_value()) {
+                return {maximumIterations, maxIterationsWithoutImprovement, processingTime, deadlines,
+                    Population(mutationProbability, individualTransferRate, populationSize, processingTime, deadlines,
+                        {
+                            Individual(processingTime, deadlines, bestNEHAlgorithmIndividual.value(), false)
+                        })
+                };
+            }
+
+            return {maximumIterations, maxIterationsWithoutImprovement, mutationProbability,
+                individualTransferRate, populationSize, processingTime, deadlines};
+        }(maximumIterations, maxIterationsWithoutImprovement, mutationProbability, individualTransferRate, populationSize);
 
         if (shouldPrintSolution) {
             runner.print();
