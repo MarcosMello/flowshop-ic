@@ -7,7 +7,7 @@ inline size_t maxIterations = 100;
 inline size_t tabuListSize = 10;
 
 constexpr int NUMBER_OF_PARENTS = 2;
-constexpr int SEED = 1; //mudar a seed para testes 30x, para o grafico tem que manter a seed
+inline int SEED = 1;
 
 inline seed_seq seed{SEED};
 inline auto defaultRandomEngine = default_random_engine(seed);

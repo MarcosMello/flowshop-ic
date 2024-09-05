@@ -68,6 +68,15 @@ void parseArguments(const int argc, char *argv[]) {
             geneticAlgorithmLog = true;
         } else if (argument == "-noHeuristic") {
             runNEHAlgorithm = false;
+        } else if (argument == "-unfixSeed") {
+            auto timeNow = time(nullptr);
+
+            seed_seq seed{timeNow};
+            defaultRandomEngine = default_random_engine(seed);
+
+            for (auto s : seed) {
+                cout << "Seed: " << s << endl;
+            }
         }
     }
 }
