@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.22)
 project(flowshop_ic)
 
 set(CMAKE_CXX_COMPILER clang++)
@@ -6,6 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -m64 -O -fPIC -fexceptions -DNDEBUG -DI
 
 add_executable(flowshop_ic
         Code/cplexModel/cplexModel.cpp
+        Code/cplexModel.h
         Code/bits/stdc++.h
         Code/GeneticAlgorithm/GeneticAlgorithm.cpp
         Code/inputData/inputData.cpp
@@ -17,6 +18,8 @@ add_executable(flowshop_ic
         Code/main.cpp
         Code/Latex/comparisonTable.cpp
         Code/TabuSearch/TabuSearch.cpp
+        Code/NEH.h
+        Code/Heuristic/NEH.cpp
 )
 
 include_directories(/Applications/CPLEX_Studio2211/cplex/include)

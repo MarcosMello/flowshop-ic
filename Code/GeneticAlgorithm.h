@@ -7,10 +7,12 @@ inline size_t maxIterations = 100;
 inline size_t tabuListSize = 10;
 
 constexpr int NUMBER_OF_PARENTS = 2;
-constexpr int SEED = 1;
+inline int SEED = 1;
 
 inline seed_seq seed{SEED};
 inline auto defaultRandomEngine = default_random_engine(seed);
+
+inline bool geneticAlgorithmLog = false;
 
 inline auto getRandomNumber(const size_t lowerBound, const size_t upperBound) {
     return uniform_int_distribution (lowerBound, upperBound) (defaultRandomEngine);
@@ -27,8 +29,12 @@ inline vector<int> getRandomJobPermutation(const size_t length) {
 
 class Individual{
 public:
-    Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines, vector<int> value);
+    Individual(const vector<vector<int>> &processingTime,
+               const vector<int> &deadlines,
+               vector<int> value,
+               bool cplexConclusion);
     Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines);
+    Individual(const vector<vector<int>> &processingTime, const vector<int> &deadlines, bool cplexConclusion);
 
     [[nodiscard]] vector<int> getValue() const;
     [[nodiscard]] size_t getFitness() const;
@@ -50,7 +56,7 @@ private:
     vector<int> value;
     size_t fitness;
 
-    void calculate_fitness(const vector<vector<int>> &processingTime, const vector<int> &deadlines);
+    void calculate_fitness(const vector<vector<int>> &processingTime, const vector<int> &deadlines, bool cplexConclusion);
 };
 
 class Population {
@@ -61,8 +67,9 @@ public:
                const vector<vector<int>> &processingTime,
                const vector<int> &deadlines);
 
-    Population(size_t mutationProbability, size_t individualTransferRate, const vector<vector<int>> &processingTime,
-        const vector<int> &deadlines, const vector<Individual>& population);
+    Population(size_t mutationProbability, size_t individualTransferRate, size_t populationSize,
+        const vector<vector<int>> &processingTime, const vector<int> &deadlines,
+        const vector<Individual>& populationIndividualVector);
 
     void generateNextGeneration();
 
@@ -92,6 +99,10 @@ private:
 
 class Conclusion {
 public:
+    Conclusion(const vector<vector<int>> &processingTime,
+               const vector<int> &deadlines,
+               Individual *individual,
+               bool cplexConclusion);
     Conclusion(const vector<vector<int>> &processingTime, const vector<int> &deadlines, Individual *individual);
 
     [[nodiscard]] vector<vector<int>> generateConclusion() const;
@@ -111,6 +122,9 @@ private:
 
 class GeneticAlgorithmRunner{
 public:
+    GeneticAlgorithmRunner(size_t maximumIterations, size_t maximumIterationsWithoutImprovement,
+        const vector<vector<int>> &processingTime, const vector<int> &deadlines, Population population);
+
     GeneticAlgorithmRunner(size_t maximumIterations, size_t maximumIterationsWithoutImprovement,
         size_t mutationProbability, size_t individualTransferRate, size_t populationSize,
         const vector<vector<int>> &processingTime, const vector<int> &deadlines);

@@ -1,6 +1,9 @@
 #include "cplexModel.h"
+#include "NEH.h"
 #include "GeneticAlgorithm.h"
 #include "Latex/ComparisonTable.h"
+
+#define FASTIO ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 
 string path = "../Code/data/equal_deadlines";
 
@@ -15,6 +18,7 @@ string caption = "CAPTION HERE";
 string label = "LABEL HERE";
 
 bool useCPLEX = true;
+bool useOnlyCPLEX = false;
 
 void parseArguments(const int argc, char *argv[]) {
     for (int i = 0; i < argc; i++) {
@@ -55,6 +59,22 @@ void parseArguments(const int argc, char *argv[]) {
             maxIterationsWithoutImprovement = static_cast<size_t>(strtol(strippedArgument.c_str(), nullptr, 10));
         } else if (argument == "-noCplex") {
             useCPLEX = false;
+        } else if (argument == "-useOnlyCPLEX") {
+            isCplexVerboseActive = true;
+            shouldPrintSolution = true;
+            useOnlyCPLEX = true;
+            useCPLEX = true;
+        } else if (argument == "-geneticAlgorithmLog") {
+            geneticAlgorithmLog = true;
+        } else if (argument == "-noHeuristic") {
+            runNEHAlgorithm = false;
+        } else if (argument == "-unfixSeed") {
+            auto timeNow = time(nullptr);
+
+            cout << timeNow << endl;
+
+            seed_seq seed{timeNow};
+            defaultRandomEngine = default_random_engine(seed);
         }
     }
 }
@@ -86,22 +106,52 @@ std::string currentDateTime() {
 }
 
 int main(const int argc, char *argv[]) {
+    FASTIO
+
     parseArguments(argc, argv);
 
     auto latexTable = Table(caption, label, hasObjectiveValueReference);
 
     const vector<string> filesPaths =  generateFilesPathsVector(path);
     for (const auto &path: filesPaths) {
-        cplexSolution = 0;
-        cplexTimeElapsed = chrono::duration<double>(0);
+        IloNum cplexSolution = 0;
+        auto cplexTimeElapsed = chrono::duration<double>(0);
 
         const auto data = InputData(path);
 
         if (shouldPrintSolution && useCPLEX) {
             cout << "Cplex" << " ( " << data.stem << "_" << data.instance << " ): \n" << endl;
         }
-        if (useCPLEX) {
-            cplexModelSolver(data);
+        if (useCPLEX || useOnlyCPLEX) {
+            const CplexSolver cplexModelSolver(data);
+
+            cplexSolution = cplexModelSolver.getCplexSolution();
+            cplexTimeElapsed = cplexModelSolver.getCplexTimeElapsed();
+
+            if (shouldPrintSolution) {
+                if (useOnlyCPLEX) {
+                    cout << "\n";
+                }
+
+                cplexModelSolver.print();
+            }
+        }
+
+        if (useOnlyCPLEX) {
+            return 0;
+        }
+
+        optional<vector<int>> bestNEHAlgorithmIndividual;
+
+        if (runNEHAlgorithm) {
+            auto [_bestNEHAlgorithmIndividual, fitnessValue] = NEHAlgorithm(data);
+            bestNEHAlgorithmIndividual = _bestNEHAlgorithmIndividual;
+
+            if (shouldPrintSolution) {
+                cout << "\nNEH Algorithm" << " ( " << data.stem << "_" << data.instance << " ): \n" << endl;
+
+                printNEHAlgorithm(_bestNEHAlgorithmIndividual, fitnessValue, "NEH Best Permutation: ");
+            }
         }
 
         if (shouldPrintSolution) {
@@ -111,17 +161,23 @@ int main(const int argc, char *argv[]) {
         const vector<vector<int>> &processingTime = data.processingTime;
         const vector<int> &deadlines = data.deadlines;
 
-        populationSize += static_cast<int>(sqrt(deadlines.size()));
+        populationSize += ceil(sqrt(deadlines.size()));
 
-        const GeneticAlgorithmRunner runner(
-            maximumIterations,
-            maxIterationsWithoutImprovement,
-            mutationProbability,
-            individualTransferRate,
-            populationSize,
-            processingTime,
-            deadlines
-        );
+        const GeneticAlgorithmRunner runner = [bestNEHAlgorithmIndividual, processingTime, deadlines](
+            size_t maximumIterations, size_t maxIterationsWithoutImprovement, size_t mutationProbability,
+            size_t individualTransferRate, size_t populationSize) -> GeneticAlgorithmRunner {
+            if (bestNEHAlgorithmIndividual.has_value()) {
+                return {maximumIterations, maxIterationsWithoutImprovement, processingTime, deadlines,
+                    Population(mutationProbability, individualTransferRate, populationSize, processingTime, deadlines,
+                        {
+                            Individual(processingTime, deadlines, bestNEHAlgorithmIndividual.value(), false)
+                        })
+                };
+            }
+
+            return {maximumIterations, maxIterationsWithoutImprovement, mutationProbability,
+                individualTransferRate, populationSize, processingTime, deadlines};
+        }(maximumIterations, maxIterationsWithoutImprovement, mutationProbability, individualTransferRate, populationSize);
 
         if (shouldPrintSolution) {
             runner.print();

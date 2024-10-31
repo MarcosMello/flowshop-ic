@@ -1,16 +1,37 @@
 #include "../GeneticAlgorithm.h"
+#include "../cplexModel.h"
 
-Conclusion::Conclusion(const vector<vector<int>> &processingTime, const vector<int> &deadlines, Individual *individual) :
-        processingTime(processingTime), deadlines(deadlines), individual(individual),
-        jobs(processingTime.size()), machines(processingTime.front().size()),
-        conclusion(generateConclusion()), objectiveValue(0) {
-    for (size_t i = 0; i < conclusion.back().size(); i++) {
-        objectiveValue += abs(conclusion.back()[i] - deadlines[(*individual)[i]]);
+Conclusion::Conclusion(const vector<vector<int>> &processingTime, const vector<int> &deadlines, Individual *individual,
+                       const bool cplexConclusion) : processingTime(processingTime),
+                                                     deadlines(deadlines),
+                                                     individual(individual),
+                                                     jobs(processingTime.size()),
+                                                     machines(processingTime.front().size()),
+                                                     objectiveValue(0) {
+    if (!cplexConclusion) {
+        const vector<vector<int>> conclusion = generateConclusion();
+
+        for (size_t i = 0; i < conclusion.back().size(); i++) {
+            objectiveValue += abs(conclusion.back()[i] - deadlines[(*individual)[i]]);
+        }
+
+        return;
     }
+
+    const CplexSolver cplexSolver(individual->getValue(),
+                                          static_cast<int>(jobs),
+                                          static_cast<int>(machines),
+                                          processingTime,
+                                          deadlines);
+
+    objectiveValue = static_cast<int>(cplexSolver.getCplexSolution());
 }
 
+Conclusion::Conclusion(const vector<vector<int>> &processingTime, const vector<int> &deadlines, Individual *individual) :
+    Conclusion(processingTime, deadlines, individual, false) {}
+
 [[nodiscard]]
-vector<vector<int>> Conclusion::generateConclusion() const{
+vector<vector<int>> Conclusion::generateConclusion() const {
     vector conclusion(this->machines, vector(this->jobs, 0));
 
     auto safeDecrement = [](const size_t i) -> size_t {

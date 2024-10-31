@@ -50,7 +50,7 @@ vector<Individual> TabuSearch::getNeighbors(const Individual &individual) const 
 
             swap(neighborValue[i], neighborValue[j]);
 
-            neighbors.emplace_back(this->processingTime, this->deadlines, neighborValue);
+            neighbors.emplace_back(this->processingTime, this->deadlines, neighborValue, false);
         }
     }
 
